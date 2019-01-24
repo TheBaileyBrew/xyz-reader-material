@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/coordinator_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/article_app_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/appbar_article_height">
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:expandedTitleMarginEnd="40dp"
+            app:expandedTitleMarginBottom="10dp"
+            app:expandedTitleMarginStart="40dp"
+            app:expandedTitleTextAppearance="@style/ExpandedArticleToolbar"
+            app:collapsedTitleTextAppearance="@style/CollapsedArticleToolbar"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            <ImageView
+                android:id="@+id/article_toolbar_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:scaleType="fitCenter"
+                app:layout_collapseMode="parallax"/>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/article_toolbar"
+                android:layout_marginLeft="@dimen/list_toolbar_side_margin"
+                android:layout_marginRight="@dimen/list_toolbar_side_margin"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_collapseMode="pin"
+                android:text="this is the title"
+                android:subtitle="this is the subtitle"
+                app:titleTextColor="@color/colorAccentDark"
+                android:elevation="6dp"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager"
+            android:nestedScrollingEnabled="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_favorite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchorGravity="bottom|right|end"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        app:fabSize="normal"
+        android:src="@drawable/ic_share"
+        android:scaleType="center"
+        app:layout_anchor="@id/pager"
+        app:layout_behavior="com.example.xyzreader.ui.behavior.FloatingActionButtonUtils"
+        app:rippleColor="@color/colorAccent"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
