@@ -116,7 +116,6 @@ public class jsonParseUtils {
                 article.setArticlePhotoUrl(articlePhotoUrl);
                 article.setArticleAspectRatio(articleAspectRatio);
                 article.setArticlePublishDate(articlePublishDate);
-                repo.insertArticle(article);
                 allArticles.add(article);
 
             }

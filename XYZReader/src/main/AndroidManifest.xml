@@ -37,7 +37,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.ArticleListActivity" />
         </activity>
+        <activity android:name=".ui.ArticleLoadingSplash" />
 
+        <service android:name=".remote.MyIntentService" />
     </application>
 
 </manifest>

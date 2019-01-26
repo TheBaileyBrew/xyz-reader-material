@@ -36,13 +36,7 @@ public class ArticleLoader extends AsyncTask<String, Void, List<Article>> {
 
     @Override
     protected List<Article> doInBackground(String... strings) {
-        URL articleUrlRequest = Config.BASE_URL;
-        try {
-            String jsonArticleReturn = jsonParseUtils.makeHttpsRequest(articleUrlRequest);
-            return jsonParseUtils.extractArticleData(jsonArticleReturn);
-        } catch (Exception e) {
-            Log.e(TAG, "doInBackground: can't make http request", e);
-        }
+
         return null;
     }
 

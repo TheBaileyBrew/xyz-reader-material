@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.loader.content.Loader;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -16,19 +17,23 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.xyzreader.R;
+import com.example.xyzreader.database.ArticleRepository;
 import com.example.xyzreader.database.models.Article;
 import com.example.xyzreader.loaders.ArticleLoader;
+import com.example.xyzreader.loaders.ViewPagerLoader;
 import com.example.xyzreader.ui.adapters.CollapsingToolbarListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static android.view.View.VISIBLE;
 
@@ -36,6 +41,8 @@ import static android.view.View.VISIBLE;
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
 public class ArticleDetailActivity extends AppCompatActivity {
+
+    private final static String TAG = ArticleDetailActivity.class.getSimpleName();
 
     private Cursor mCursor;
     private long mStartId;
@@ -45,7 +52,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
     private int mTopInset;
 
     private ViewPager mPager;
-    private List<Article> mAllArticles;
+    private static List<Article> mAllArticles;
     private MyPagerAdapter mPagerAdapter;
     private Toolbar mToolbar;
     private AppBarLayout appBarLayout;
@@ -57,8 +64,19 @@ public class ArticleDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.article_detail_activity);
+        ViewPagerLoader viewPagerLoader = new ViewPagerLoader();
+        try {
+            mAllArticles = viewPagerLoader.execute("run").get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
 
-        getLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Object>) this);
+        Intent getIntent = getIntent();
+        int selectedPosition = getIntent.getIntExtra("position",0);
+
+
         setupToolbarDetails();
         floatingButton = findViewById(R.id.floating_favorite_button);
 
@@ -66,25 +84,28 @@ public class ArticleDetailActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
 
-        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (selectedPosition != position) {
+                    mPager.setCurrentItem(position);
+                }
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
             }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (mCursor != null) {
-                    mCursor.moveToPosition(position);
-                }
-                //mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
-            }
         });
-
-
+        
 
         if (savedInstanceState == null) {
-
+            Log.e(TAG, "onCreate: savedStateChange is null");
         }
     }
 
@@ -127,7 +148,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            mCursor.moveToPosition(position);
+            Log.e(TAG, "getItem: position is: " + position );
             return ArticleDetailFragment.newInstance(mAllArticles.get(position).getArticleID());
         }
 
@@ -135,5 +156,9 @@ public class ArticleDetailActivity extends AppCompatActivity {
         public int getCount() {
             return (mAllArticles != null) ? mAllArticles.size() : 0;
         }
+    }
+
+    public static List<Article> getArticles() {
+        return mAllArticles;
     }
 }

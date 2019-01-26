@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.example.xyzreader.R;
+import com.example.xyzreader.database.ArticleRepository;
 import com.example.xyzreader.database.models.Article;
 import com.example.xyzreader.loaders.ArticleLoader;
 import com.squareup.picasso.Picasso;
@@ -51,12 +52,14 @@ public class ArticleDetailFragment extends Fragment {
     private List<Article> mAllArticles;
     private int mMutedColor = 0xFF333333;
     private ColorDrawable mStatusBarColorDrawable;
-    private int position = 1;
+    private int position;
 
     private ImageView mPhotoView;
     private int mScrollY;
     private boolean mIsCard = false;
     private int mStatusBarFullOpacityBottom;
+
+    private ArticleRepository repository;
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
     // Use default locale format
@@ -74,6 +77,7 @@ public class ArticleDetailFragment extends Fragment {
     public static ArticleDetailFragment newInstance(long itemId) {
         Bundle arguments = new Bundle();
         arguments.putLong(ARG_ITEM_ID, itemId);
+        Log.e(TAG, "newInstance: ITEM_ID " +itemId );
         ArticleDetailFragment fragment = new ArticleDetailFragment();
         fragment.setArguments(arguments);
         return fragment;
@@ -82,9 +86,12 @@ public class ArticleDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAllArticles = ArticleDetailActivity.getArticles();
+        Log.e(TAG, "onCreate: article size: " + mAllArticles.size() );
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             mItemId = getArguments().getLong(ARG_ITEM_ID);
+            position = (int) mItemId;
         }
 
         mIsCard = getResources().getBoolean(R.bool.detail_is_card);

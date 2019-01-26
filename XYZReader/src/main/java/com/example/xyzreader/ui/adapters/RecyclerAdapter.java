@@ -1,33 +1,29 @@
 package com.example.xyzreader.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.database.ArticleRepository;
 import com.example.xyzreader.database.models.Article;
-import com.example.xyzreader.ui.ImageLoaderHelper;
-import com.example.xyzreader.ui.XYZReader;
+import com.example.xyzreader.ui.ArticleDetailActivity;
 import com.example.xyzreader.ui.behavior.DynamicHeightImageView;
+import com.example.xyzreader.ui.behavior.OnClickInterface;
 import com.example.xyzreader.ui.behavior.RecyclerDiffCallback;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Random;
 
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,10 +39,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private List<Article> mArticles;
     private Context mContext;
+    private OnClickInterface onClick;
 
-    public RecyclerAdapter(Context context, List<Article> allArticles) {
+    public RecyclerAdapter(Context context, List<Article> allArticles, OnClickInterface onClick) {
         this.mArticles = allArticles;
         mContext = context;
+        this.onClick = onClick;
 
     }
 
@@ -166,6 +164,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //TODO: Set OnClick Interface
+                        Intent openDetailsDisplay = new Intent(mContext, ArticleDetailActivity.class);
+                        openDetailsDisplay.putExtra("position", mArticles.get(vhl.getAdapterPosition()).getArticleID());
+                        mContext.startActivity(openDetailsDisplay);
                         //Figure out the intent call to open new activity based on item selected
                         //mContext.startActivity(new Intent(Intent.ACTION_VIEW,
                         //        ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
@@ -179,6 +181,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Intent openDetailsDisplay = new Intent(mContext, ArticleDetailActivity.class);
+                        openDetailsDisplay.putExtra("position", mArticles.get(vhr.getAdapterPosition()).getArticleID());
+                        mContext.startActivity(openDetailsDisplay);
                         //Figure out the intent call to open new activity based on item selected
                         //mContext.startActivity(new Intent(Intent.ACTION_VIEW,
                         //        ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));

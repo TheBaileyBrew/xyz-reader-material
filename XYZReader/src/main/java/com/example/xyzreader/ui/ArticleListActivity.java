@@ -31,6 +31,7 @@ import com.example.xyzreader.database.models.Article;
 import com.example.xyzreader.loaders.ArticleLoader;
 import com.example.xyzreader.ui.adapters.CollapsingToolbarListener;
 import com.example.xyzreader.ui.adapters.RecyclerAdapter;
+import com.example.xyzreader.ui.behavior.OnClickInterface;
 import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import static android.view.View.VISIBLE;
  * touched, lead to a {@link ArticleDetailActivity} representing item details. On tablets, the
  * activity presents a grid of items as cards.
  */
-public class ArticleListActivity extends AppCompatActivity {
+public class ArticleListActivity extends AppCompatActivity{
 
     private static final String TAG = ArticleListActivity.class.toString();
     private Toolbar mToolbar;
@@ -100,7 +101,12 @@ public class ArticleListActivity extends AppCompatActivity {
             }
         });
         */
-        adapter = new RecyclerAdapter(this, listArticles);
+        adapter = new RecyclerAdapter(this, listArticles, new OnClickInterface() {
+            @Override
+            public void onClick(int position, int articleID) {
+                ArticleDetailFragment.newInstance(position);
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,RecyclerView.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -111,8 +117,6 @@ public class ArticleListActivity extends AppCompatActivity {
 
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.getNavigationIcon().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
         appBarLayout.setExpanded(true);
         appBarLayout.addOnOffsetChangedListener(new CollapsingToolbarListener() {
             @Override
@@ -156,7 +160,5 @@ public class ArticleListActivity extends AppCompatActivity {
     private void updateRefreshingUI() {
         mSwipeRefreshLayout.setRefreshing(mIsRefreshing);
     }
-
-
 
 }
